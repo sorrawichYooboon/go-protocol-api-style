@@ -64,3 +64,6 @@ migrate-steps-up-one:
 
 migrate-steps-down-one:
 	go run cmd/migrate/main.go steps -1
+
+gen-graphql:
+	gqlgen generate

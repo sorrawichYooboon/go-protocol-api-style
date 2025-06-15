@@ -6,8 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sorrawichYooboon/protocol-golang/config"
+	"github.com/sorrawichYooboon/protocol-golang/graph"
 	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/database"
-	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http"
+	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/graphql"
+	httpinfra "github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http"
 	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http/handler"
 	"github.com/sorrawichYooboon/protocol-golang/internal/usecase"
 	"github.com/sorrawichYooboon/protocol-golang/logger"
@@ -19,7 +21,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to load configuration: %v", err)
 	}
-
 	db := database.Connect(cfg)
 	migrations.RunMigrations(cfg)
 	logger.InitLogger()
@@ -29,12 +30,17 @@ func main() {
 	movieHandler := handler.NewMovieHandler(movieUsecase)
 
 	router := gin.Default()
-	http.SetupRoutes(router, movieHandler)
+
+	httpinfra.SetupRoutes(router, movieHandler)
+
+	gqlResolver := &graph.Resolver{MovieUsecase: movieUsecase}
+	router.POST("/graphql", graphql.GraphqlHandler(gqlResolver))
+	router.GET("/playground", graphql.PlaygroundHandler())
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8081"
 	}
-
+	log.Printf("Server running at :%s (REST, GraphQL, Playground)", port)
 	router.Run(":" + port)
 }
