@@ -11,6 +11,8 @@ import (
 	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/graphql"
 	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http"
 	httphandler "github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http/handler"
+	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/soap"
+	soaphandler "github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/soap/handler"
 	"github.com/sorrawichYooboon/protocol-golang/internal/usecase"
 	"github.com/sorrawichYooboon/protocol-golang/logger"
 	"github.com/sorrawichYooboon/protocol-golang/migrations"
@@ -36,6 +38,9 @@ func main() {
 	gqlResolver := &graph.Resolver{MovieUsecase: movieUsecase}
 	router.POST("/graphql", graphql.GraphqlHandler(gqlResolver))
 	router.GET("/playground", graphql.PlaygroundHandler())
+
+	movieSOAPHandler := soaphandler.NewMovieSOAPHandler(movieUsecase)
+	soap.SetupSOAPRoutes(router, movieSOAPHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
