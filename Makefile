@@ -67,3 +67,9 @@ migrate-steps-down-one:
 
 gen-graphql:
 	gqlgen generate
+
+test-coverage:
+	go test -cover ./internal/usecase
+
+test-coverage-html:
+	go test -coverprofile=coverage.out ./internal/usecase && go tool cover -html=coverage.out -o coverage.html
