@@ -2,10 +2,10 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http/handler"
+	httphandler "github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http/handler"
 )
 
-func SetupRoutes(router *gin.Engine, movieHandler handler.MovieHandler) {
+func SetupRoutes(router *gin.Engine, movieHandler httphandler.MovieHandler) {
 	movies := router.Group("/movies")
 	{
 		movies.GET("", movieHandler.GetMovies)

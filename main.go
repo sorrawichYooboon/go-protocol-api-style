@@ -9,8 +9,8 @@ import (
 	"github.com/sorrawichYooboon/protocol-golang/graph"
 	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/database"
 	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/graphql"
-	httpinfra "github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http"
-	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http/handler"
+	"github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http"
+	httphandler "github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http/handler"
 	"github.com/sorrawichYooboon/protocol-golang/internal/usecase"
 	"github.com/sorrawichYooboon/protocol-golang/logger"
 	"github.com/sorrawichYooboon/protocol-golang/migrations"
@@ -27,11 +27,11 @@ func main() {
 
 	movieRepo := database.NewMovieRepository(db)
 	movieUsecase := usecase.NewMovieUsecase(movieRepo)
-	movieHandler := handler.NewMovieHandler(movieUsecase)
 
 	router := gin.Default()
 
-	httpinfra.SetupRoutes(router, movieHandler)
+	movieHandler := httphandler.NewMovieHandler(movieUsecase)
+	http.SetupRoutes(router, movieHandler)
 
 	gqlResolver := &graph.Resolver{MovieUsecase: movieUsecase}
 	router.POST("/graphql", graphql.GraphqlHandler(gqlResolver))
