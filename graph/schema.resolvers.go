@@ -8,7 +8,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/sorrawichYooboon/protocol-golang/graph/model"
+	"github.com/sorrawichYooboon/go-protocol-api-style/graph/model"
 )
 
 // Movies is the resolver for the movies field.

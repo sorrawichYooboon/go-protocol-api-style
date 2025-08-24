@@ -14,7 +14,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/sorrawichYooboon/protocol-golang/graph/model"
+	"github.com/sorrawichYooboon/go-protocol-api-style/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -588,7 +588,7 @@ func (ec *executionContext) _Query_movies(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.([]*model.Movie)
 	fc.Result = res
-	return ec.marshalNMovie2ᚕᚖgithubᚗcomᚋsorrawichYooboonᚋprotocolᚑgolangᚋgraphᚋmodelᚐMovieᚄ(ctx, field.Selections, res)
+	return ec.marshalNMovie2ᚕᚖgithubᚗcomᚋsorrawichYooboonᚋgoᚑprotocolᚑapiᚑstyleᚋgraphᚋmodelᚐMovieᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_movies(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -639,7 +639,7 @@ func (ec *executionContext) _Query_movie(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.Movie)
 	fc.Result = res
-	return ec.marshalOMovie2ᚖgithubᚗcomᚋsorrawichYooboonᚋprotocolᚑgolangᚋgraphᚋmodelᚐMovie(ctx, field.Selections, res)
+	return ec.marshalOMovie2ᚖgithubᚗcomᚋsorrawichYooboonᚋgoᚑprotocolᚑapiᚑstyleᚋgraphᚋmodelᚐMovie(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_movie(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3278,7 +3278,7 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) marshalNMovie2ᚕᚖgithubᚗcomᚋsorrawichYooboonᚋprotocolᚑgolangᚋgraphᚋmodelᚐMovieᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Movie) graphql.Marshaler {
+func (ec *executionContext) marshalNMovie2ᚕᚖgithubᚗcomᚋsorrawichYooboonᚋgoᚑprotocolᚑapiᚑstyleᚋgraphᚋmodelᚐMovieᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Movie) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3302,7 +3302,7 @@ func (ec *executionContext) marshalNMovie2ᚕᚖgithubᚗcomᚋsorrawichYooboon�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNMovie2ᚖgithubᚗcomᚋsorrawichYooboonᚋprotocolᚑgolangᚋgraphᚋmodelᚐMovie(ctx, sel, v[i])
+			ret[i] = ec.marshalNMovie2ᚖgithubᚗcomᚋsorrawichYooboonᚋgoᚑprotocolᚑapiᚑstyleᚋgraphᚋmodelᚐMovie(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3322,7 +3322,7 @@ func (ec *executionContext) marshalNMovie2ᚕᚖgithubᚗcomᚋsorrawichYooboon�
 	return ret
 }
 
-func (ec *executionContext) marshalNMovie2ᚖgithubᚗcomᚋsorrawichYooboonᚋprotocolᚑgolangᚋgraphᚋmodelᚐMovie(ctx context.Context, sel ast.SelectionSet, v *model.Movie) graphql.Marshaler {
+func (ec *executionContext) marshalNMovie2ᚖgithubᚗcomᚋsorrawichYooboonᚋgoᚑprotocolᚑapiᚑstyleᚋgraphᚋmodelᚐMovie(ctx context.Context, sel ast.SelectionSet, v *model.Movie) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3631,7 +3631,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOMovie2ᚖgithubᚗcomᚋsorrawichYooboonᚋprotocolᚑgolangᚋgraphᚋmodelᚐMovie(ctx context.Context, sel ast.SelectionSet, v *model.Movie) graphql.Marshaler {
+func (ec *executionContext) marshalOMovie2ᚖgithubᚗcomᚋsorrawichYooboonᚋgoᚑprotocolᚑapiᚑstyleᚋgraphᚋmodelᚐMovie(ctx context.Context, sel ast.SelectionSet, v *model.Movie) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

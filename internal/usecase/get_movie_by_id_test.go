@@ -3,8 +3,8 @@ package usecase
 import (
 	"testing"
 
-	"github.com/sorrawichYooboon/protocol-golang/internal/domain"
-	mockRepo "github.com/sorrawichYooboon/protocol-golang/internal/mock"
+	"github.com/sorrawichYooboon/go-protocol-api-style/internal/domain"
+	mockRepo "github.com/sorrawichYooboon/go-protocol-api-style/internal/mock"
 	"github.com/stretchr/testify/assert"
 )
 

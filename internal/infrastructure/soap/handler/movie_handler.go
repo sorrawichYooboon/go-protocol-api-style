@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sorrawichYooboon/protocol-golang/internal/usecase"
+	"github.com/sorrawichYooboon/go-protocol-api-style/internal/usecase"
 )
 
 const soapEnv = "http://schemas.xmlsoap.org/soap/envelope/"

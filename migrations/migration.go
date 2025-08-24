@@ -7,7 +7,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/sorrawichYooboon/protocol-golang/config"
+	"github.com/sorrawichYooboon/go-protocol-api-style/config"
 )
 
 func RunMigrations(cfg *config.Config) {

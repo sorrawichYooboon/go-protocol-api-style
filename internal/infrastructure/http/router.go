@@ -2,7 +2,7 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
-	httphandler "github.com/sorrawichYooboon/protocol-golang/internal/infrastructure/http/handler"
+	httphandler "github.com/sorrawichYooboon/go-protocol-api-style/internal/infrastructure/http/handler"
 )
 
 func SetupRoutes(router *gin.Engine, movieHandler httphandler.MovieHandler) {

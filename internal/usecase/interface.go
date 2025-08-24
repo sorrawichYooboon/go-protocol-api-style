@@ -1,6 +1,6 @@
 package usecase
 
-import "github.com/sorrawichYooboon/protocol-golang/internal/domain"
+import "github.com/sorrawichYooboon/go-protocol-api-style/internal/domain"
 
 type MovieUsecase interface {
 	GetAllMovies() ([]domain.Movie, error)

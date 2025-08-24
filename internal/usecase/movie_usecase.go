@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/sorrawichYooboon/protocol-golang/internal/domain"
-	"github.com/sorrawichYooboon/protocol-golang/internal/repository"
+	"github.com/sorrawichYooboon/go-protocol-api-style/internal/domain"
+	"github.com/sorrawichYooboon/go-protocol-api-style/internal/repository"
 )
 
 type MovieUsecaseImpl struct {

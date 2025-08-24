@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/sorrawichYooboon/protocol-golang/internal/domain"
+import "github.com/sorrawichYooboon/go-protocol-api-style/internal/domain"
 
 type MovieRepository interface {
 	GetAll() ([]domain.Movie, error)

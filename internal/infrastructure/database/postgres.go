@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/sorrawichYooboon/protocol-golang/config"
+	"github.com/sorrawichYooboon/go-protocol-api-style/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

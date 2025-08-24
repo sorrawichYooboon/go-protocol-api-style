@@ -3,7 +3,7 @@
 package mockRepo
 
 import (
-	domain "github.com/sorrawichYooboon/protocol-golang/internal/domain"
+	domain "github.com/sorrawichYooboon/go-protocol-api-style/internal/domain"
 	mock "github.com/stretchr/testify/mock"
 )
 

@@ -68,6 +68,9 @@ migrate-steps-down-one:
 gen-graphql:
 	gqlgen generate
 
+gen-grpc:
+	protoc --go_out=. --go-grpc_out=. proto/movie.proto
+
 test-coverage:
 	go test -cover ./internal/usecase
 

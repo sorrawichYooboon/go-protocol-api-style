@@ -6,7 +6,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
-	"github.com/sorrawichYooboon/protocol-golang/graph"
+	"github.com/sorrawichYooboon/go-protocol-api-style/graph"
 )
 
 func GraphqlHandler(resolver *graph.Resolver) gin.HandlerFunc {
