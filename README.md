@@ -2,14 +2,14 @@
 
 > **Note on API Styles and Protocols:**  
 > This project demonstrates how multiple API styles (REST, GraphQL, SOAP) and a true protocol (gRPC) can be supported in a single Go codebase.  
-> - **Protocols** (like HTTP, gRPC) define *how* data is transmitted over the network.  
-> - **API styles/specifications** (like REST, SOAP, GraphQL) define *how* APIs structure requests and responses, but rely on a protocol (almost always HTTP or HTTP/2) for transport.  
+> - **Protocols** (like HTTP, gRPC, SOAP) define *how* data is transmitted over the network.  
+> - **API styles/specifications** (like REST, GraphQL) define *how* APIs structure requests and responses, but rely on a protocol (almost always HTTP or HTTP/2) for transport.  
 >   - **REST**: API style using HTTP and JSON  
 >   - **GraphQL**: Query language/specification using HTTP and JSON  
->   - **SOAP**: Messaging specification using HTTP and XML  
+>   - **SOAP**: Messaging protocol using HTTP and XML  
 >   - **gRPC**: Protocol and framework using HTTP/2 and Protobuf  
 >  
-> In summary, **gRPC is a protocol**, while **REST, SOAP, and GraphQL are API styles/specifications** that use a protocol underneath.
+> In summary, **gRPC and SOAP are protocols**, while **REST and GraphQL are API styles/specifications** that use a protocol underneath.
 
 ---
 
@@ -402,7 +402,7 @@ curl -s http://localhost:8081/soap/movie.wsdl
 
 ### SOAP
 
-**Type:** Messaging specification (not a protocol).  
+**Type:** Messaging protocol.  
 **Transport:** HTTP  
 **Format:** XML  
 **Setup:**  
@@ -463,11 +463,11 @@ curl -s http://localhost:8081/soap/movie.wsdl
 |-----------|----------------------|--------------------|-------------|-----------------|-------------------------------------------|
 | REST      | API Style            | HTTP               | JSON        | None            | Simple HTTP verbs and JSON                |
 | GraphQL   | Spec/Query Language  | HTTP               | JSON        | `gqlgen`        | Flexible querying, sent over HTTP         |
-| SOAP      | Messaging Spec       | HTTP               | XML         | Manual/WSDL     | XML-based structure, sent over HTTP       |
+| SOAP      | Protocol             | HTTP               | XML         | Manual/WSDL     | XML-based structure, sent over HTTP       |
 | gRPC      | Protocol/Framework   | HTTP/2             | Protobuf    | `protoc`        | Binary, fast, uses protobuf, own protocol |
 
-- **Protocols** (like HTTP, gRPC) define *how* data moves between computers.
-- **Specifications/Styles** (like REST, SOAP, GraphQL) define *how* APIs structure requests/responses, but use a protocol underneath (usually HTTP).
+- **Protocols** (like HTTP, gRPC, SOAP) define *how* data moves between computers.
+- **Specifications/Styles** (like REST, GraphQL) define *how* APIs structure requests/responses, but use a protocol underneath (usually HTTP).
 
 ---
 
@@ -545,8 +545,9 @@ curl -s http://localhost:8081/soap/movie.wsdl
   It defines its own serialization (Protobuf), service definitions, streaming, and error handling.
 - gRPC **uses HTTP/2 as its transport protocol**.  
   This means gRPC messages are sent over HTTP/2 connections, but gRPC defines its own message format and semantics.
-- **REST, SOAP, and GraphQL** use HTTP as both their transport and application protocol (i.e., they use HTTP's verbs and structure directly).
+- **REST and GraphQL** use HTTP as both their transport and application protocol (i.e., they use HTTP's verbs and structure directly).
 - **gRPC** sits “on top” of HTTP/2, using its features (multiplexing, streams), but all service/method definitions and data framing are handled by gRPC itself.
+- **SOAP** also uses HTTP as a transport but relies heavily on XML and its own set of standards for message formatting and processing.
 
 **Analogy:**  
 Think of HTTP/2 as a highway—REST, SOAP, and GraphQL are cars using the road’s rules directly, while gRPC is a special train running its own schedule and cargo system but traveling on the same tracks.
