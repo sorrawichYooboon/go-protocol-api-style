@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	movieservicebinding "github.com/sorrawichYooboon/go-protocol-api-style/internal/infrastructure/soap/gen"
 	"github.com/sorrawichYooboon/go-protocol-api-style/internal/usecase"
 )
 
@@ -37,19 +38,6 @@ type SOAPFault struct {
 	XMLName xml.Name `xml:"soapenv:Fault"`
 	Code    string   `xml:"faultcode"`
 	String  string   `xml:"faultstring"`
-}
-
-type GetMovieRequest struct {
-	XMLName xml.Name `xml:"GetMovieRequest"`
-	ID      int64    `xml:"id"`
-}
-
-type GetMovieResponse struct {
-	XMLName     xml.Name `xml:"GetMovieResponse"`
-	ID          int64    `xml:"id"`
-	Title       string   `xml:"title"`
-	Description string   `xml:"description"`
-	ReleaseDate string   `xml:"releaseDate"`
 }
 
 type MovieSOAPHandler struct {
@@ -85,13 +73,9 @@ func (h *MovieSOAPHandler) Handle(c *gin.Context) {
 
 	switch action {
 	case "GetMovieRequest":
-		var req GetMovieRequest
-		if err := xml.Unmarshal([]byte(actionBody), &req); err != nil {
+		var req movieservicebinding.GetMovieRequest
+		if err := xml.Unmarshal([]byte(actionBody), &req); err != nil || req.Id == nil {
 			h.writeSOAPFault(c, "Client", "Invalid GetMovieRequest")
-			return
-		}
-		if req.ID == 0 {
-			h.writeSOAPFault(c, "Client", "id is required")
 			return
 		}
 		h.processGetMovie(c, req)
@@ -100,18 +84,18 @@ func (h *MovieSOAPHandler) Handle(c *gin.Context) {
 	}
 }
 
-func (h *MovieSOAPHandler) processGetMovie(c *gin.Context, req GetMovieRequest) {
-	movie, err := h.movieUsecase.GetMovieByID(req.ID)
+func (h *MovieSOAPHandler) processGetMovie(c *gin.Context, req movieservicebinding.GetMovieRequest) {
+	movie, err := h.movieUsecase.GetMovieByID(*req.Id)
 	if err != nil || movie == nil {
 		h.writeSOAPFault(c, "Server", "Movie not found")
 		return
 	}
 
-	resp := GetMovieResponse{
-		ID:          movie.ID,
-		Title:       movie.Title,
-		Description: movie.Description,
-		ReleaseDate: movie.ReleaseDate,
+	resp := movieservicebinding.GetMovieResponse{
+		Id:          &movie.ID,
+		Title:       &movie.Title,
+		Description: &movie.Description,
+		ReleaseDate: &movie.ReleaseDate,
 	}
 	out, _ := xml.Marshal(resp)
 	envelope := SOAPEnvelopeResponse{

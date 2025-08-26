@@ -6,15 +6,15 @@
 > - **API styles/specifications** (like REST, GraphQL) define *how* APIs structure requests and responses, but rely on a protocol (almost always HTTP or HTTP/2) for transport.  
 >   - **REST**: API style using HTTP and JSON  
 >   - **GraphQL**: Query language/specification using HTTP and JSON  
->   - **SOAP**: Messaging protocol using HTTP and XML  
->   - **gRPC**: Protocol and framework using HTTP/2 and Protobuf  
+>   - **SOAP**: Messaging protocol using HTTP and XML; **code and types are auto-generated from WSDL**  
+>   - **gRPC**: Protocol and framework using HTTP/2 and Protobuf; **code is auto-generated from .proto files**  
 >  
 > In summary, **gRPC and SOAP are protocols**, while **REST and GraphQL are API styles/specifications** that use a protocol underneath.
 
 ---
 
 A robust template project demonstrating **multi-protocol APIs in Go**: **REST**, **GraphQL**, **gRPC**, and **SOAP**.  
-Built with [Gin](https://github.com/gin-gonic/gin), [GORM](https://gorm.io/), [gqlgen](https://github.com/99designs/gqlgen), [protobuf/gRPC](https://grpc.io/docs/languages/go/quickstart/), and native SOAP.
+Built with [Gin](https://github.com/gin-gonic/gin), [GORM](https://gorm.io/), [gqlgen](https://github.com/99designs/gqlgen), [protobuf/gRPC](https://grpc.io/docs/languages/go/quickstart/), and **auto-generated SOAP code from WSDL**.
 
 ---
 
@@ -46,8 +46,8 @@ Built with [Gin](https://github.com/gin-gonic/gin), [GORM](https://gorm.io/), [g
 
 - **REST API:** Standard HTTP endpoints for CRUD and business logic.
 - **GraphQL API:** Flexible and efficient querying for frontends and integrations.
-- **gRPC API:** High-performance, type-safe remote procedure calls via Protocol Buffers.
-- **SOAP API:** Enterprise-grade, legacy system compatibility.
+- **gRPC API:** High-performance, type-safe remote procedure calls via Protocol Buffers. *(auto-generated from .proto)*
+- **SOAP API:** Enterprise-grade, legacy system compatibility. *(auto-generated from WSDL)*
 - **Unified codebase:** All API styles share domain models and business logic.
 
 ---
@@ -67,7 +67,7 @@ go-protocol-api-style/
 │   │   ├── grpc/            # gRPC service implementation and protos
 │   │   │   └── moviepb/     # gRPC generated files
 │   │   ├── http/            # REST route handler
-│   │   └── soap/            # SOAP handler and WSDL
+│   │   └── soap/            # SOAP handler, generated code, and WSDL
 │   ├── usecase/             # Business logic/services
 │   └── repository/          # Repository interfaces
 ├── logger/                  # Logger setup
@@ -348,6 +348,17 @@ curl -s -X POST http://localhost:8081/soap/movie \
 curl -s http://localhost:8081/soap/movie.wsdl
 ```
 
+> **SOAP API: The Go code and types for the SOAP service are auto-generated from the WSDL using [wsdl2go](https://github.com/fiorix/wsdl2go) or [gowsdl](https://github.com/hooklift/gowsdl).**  
+> This ensures strong typing and easy maintenance.  
+> To re-generate SOAP code after changing the WSDL, run:
+> 
+> ```sh
+> mkdir -p internal/infrastructure/soap/gen
+> wsdl2go -o internal/infrastructure/soap/gen/movie_service.go -i internal/infrastructure/soap/wsdl/movie_service.wsdl
+> ```
+> 
+> Your SOAP handlers import and use these generated types.
+
 ---
 
 ## Protocols Deep Dive
@@ -406,12 +417,15 @@ curl -s http://localhost:8081/soap/movie.wsdl
 **Transport:** HTTP  
 **Format:** XML  
 **Setup:**  
-- Handlers and WSDL in `internal/infrastructure/soap/`.
-- Uses native Go XML + custom logic (or third-party packages).
+- WSDL in `internal/infrastructure/soap/wsdl/movie_service.wsdl`
+- **Go types and client/server interfaces auto-generated in `internal/infrastructure/soap/gen/`**
+- Handlers in `internal/infrastructure/soap/handler/` use generated types
 
 **How it works:**  
 - Client sends XML payload in `soap:Envelope` via HTTP POST.
-- Server parses XML, processes request, returns XML response.
+- Server parses XML, processes request using generated code, returns XML response.
+
+**Code generation makes SOAP in Go easy and safe—no need to maintain request/response structs manually.**
 
 ---
 
@@ -440,9 +454,9 @@ curl -s http://localhost:8081/soap/movie.wsdl
 
 ### SOAP
 
-1. Define new XML request/response structs in `internal/infrastructure/soap/`.
-2. Implement handler for SOAP action.
-3. Update WSDL file as needed.
+1. Edit WSDL file for new actions/fields in `internal/infrastructure/soap/wsdl/`.
+2. Run code generation tool (see [Auto-Generation & Tools](#auto-generation--tools)).
+3. Implement handler using generated types in `internal/infrastructure/soap/handler/`.
 4. Wire to business logic as needed.
 
 ---
@@ -456,6 +470,8 @@ curl -s http://localhost:8081/soap/movie.wsdl
 - **go install google.golang.org/protobuf/cmd/protoc-gen-go@latest**: Installs the Go plugin for `protoc` to generate Go structs from `.proto` files.
 - **go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest**: Installs the Go gRPC code generator for server/client code.
 - **go get google.golang.org/grpc**/**google.golang.org/protobuf**: Installs the Go libraries for gRPC and Protobuf.
+- **go install github.com/fiorix/wsdl2go@latest**: Installs WSDL-to-Go code generator for SOAP.
+- **go install github.com/hooklift/gowsdl/cmd/gowsdl@latest**: Alternative SOAP generator.
 
 ## Comparison: API Styles vs Protocols
 
@@ -463,7 +479,7 @@ curl -s http://localhost:8081/soap/movie.wsdl
 |-----------|----------------------|--------------------|-------------|-----------------|-------------------------------------------|
 | REST      | API Style            | HTTP               | JSON        | None            | Simple HTTP verbs and JSON                |
 | GraphQL   | Spec/Query Language  | HTTP               | JSON        | `gqlgen`        | Flexible querying, sent over HTTP         |
-| SOAP      | Protocol             | HTTP               | XML         | Manual/WSDL     | XML-based structure, sent over HTTP       |
+| SOAP      | Protocol             | HTTP               | XML         | `wsdl2go`/`gowsdl` | XML-based structure, sent over HTTP       |
 | gRPC      | Protocol/Framework   | HTTP/2             | Protobuf    | `protoc`        | Binary, fast, uses protobuf, own protocol |
 
 - **Protocols** (like HTTP, gRPC, SOAP) define *how* data moves between computers.
@@ -475,7 +491,7 @@ curl -s http://localhost:8081/soap/movie.wsdl
 
 - **WSDL (Web Services Description Language):**  
   An XML file that describes a SOAP web service's operations, input/output types, and endpoint.  
-  Acts as a contract for SOAP clients/servers.
+  Acts as a contract for SOAP clients/servers and drives Go code generation for SOAP APIs.
 
 - **.proto (Protocol Buffers definition):**  
   A `.proto` file defines messages and service RPC methods for gRPC.  
@@ -511,11 +527,12 @@ curl -s http://localhost:8081/soap/movie.wsdl
 
 ### SOAP
 
-1. Write WSDL file (or update XML structs).
-2. Implement handler for SOAP actions.
-3. Start server.
-4. Client sends XML SOAP request.
-5. Server parses XML, responds with XML.
+1. Write/modify WSDL file in `internal/infrastructure/soap/wsdl/`.
+2. Run `wsdl2go` (or `gowsdl`) to generate Go code and types.
+3. Implement SOAP handler using the generated types.
+4. Start server.
+5. Client sends XML SOAP request.
+6. Server parses XML, uses generated types, responds with XML.
 
 ---
 
@@ -527,8 +544,8 @@ curl -s http://localhost:8081/soap/movie.wsdl
 
 - **REST:** Uses HTTP/1.1 (sometimes HTTP/2), sending JSON over standard HTTP methods.
 - **GraphQL:** Uses HTTP/1.1 (sometimes HTTP/2 or WebSockets), sending queries/mutations as JSON.
-- **SOAP:** Uses HTTP/1.1 (can use HTTP/2 or other protocols like SMTP), sending XML messages.
-- **gRPC:** Uses HTTP/2 (required), sending binary encoded data (Protocol Buffers).
+- **SOAP:** Uses HTTP/1.1 (can use HTTP/2 or other protocols like SMTP), sending XML messages; Go code is auto-generated from WSDL.
+- **gRPC:** Uses HTTP/2 (required), sending binary encoded data (Protocol Buffers); Go code is auto-generated from .proto.
 
 | API Style/Protocol | Uses HTTP?   | Typical HTTP Version |
 |--------------------|--------------|---------------------|
@@ -547,11 +564,13 @@ curl -s http://localhost:8081/soap/movie.wsdl
   This means gRPC messages are sent over HTTP/2 connections, but gRPC defines its own message format and semantics.
 - **REST and GraphQL** use HTTP as both their transport and application protocol (i.e., they use HTTP's verbs and structure directly).
 - **gRPC** sits “on top” of HTTP/2, using its features (multiplexing, streams), but all service/method definitions and data framing are handled by gRPC itself.
-- **SOAP** also uses HTTP as a transport but relies heavily on XML and its own set of standards for message formatting and processing.
+- **SOAP** also uses HTTP as a transport but relies heavily on XML and its own set of standards for message formatting and processing.  
+  Modern Go SOAP code is auto-generated from the WSDL for safety and maintainability.
 
 **Analogy:**  
 Think of HTTP/2 as a highway—REST, SOAP, and GraphQL are cars using the road’s rules directly, while gRPC is a special train running its own schedule and cargo system but traveling on the same tracks.
 
 ---
 
-For protocol-specific code samples, see the respective subdirectories. Open issues or discussions for advanced topics or troubleshooting!
+For protocol-specific code samples, see the respective subdirectories.  
+Open issues or discussions for advanced topics or troubleshooting!
